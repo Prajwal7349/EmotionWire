@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Sidebar.module.css';
-import logo from './public/logo.png';
+import logo from '../../public/logo.png';
 
 export default function Sidebar() {
   return (
