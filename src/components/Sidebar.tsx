@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Sidebar.module.css';
+import logo from '../../public/logo.png';
 
 export default function Sidebar() {
   return (
@@ -7,7 +9,7 @@ export default function Sidebar() {
       <div className={styles.navInner}>
         <div className={styles.logo}>
           <Link href="/">
-            <img src="/logo.png" alt="EmotionWire Logo" />
+            <Image src={logo} alt="EmotionWire Logo" />
           </Link>
         </div>
         <div className={styles.navLinks}>
