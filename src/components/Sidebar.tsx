@@ -11,8 +11,8 @@ export default function Sidebar() {
             <Image
               src="/Logo.png"
               alt="EmotionWire Logo"
-              width={120}
-              height={120}
+              width={240}
+              height={240}
             />
           </Link>
         </div>
