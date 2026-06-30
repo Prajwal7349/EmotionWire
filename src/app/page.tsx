@@ -115,7 +115,7 @@ export default function Home() {
               <a href="tel:+919822066269" className={styles.largeLink}>+91-9822066269</a>
             </div>
             <div className={styles.footerInfo}>
-              <p>Copyright © 2025 EmotionWire.</p>
+              <p>Copyright © 2026 EmotionWire.</p>
               <p>All Rights Reserved.</p>
             </div>
           </div>
