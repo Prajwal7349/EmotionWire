@@ -1,0 +1,136 @@
+/* globals.css */
+:root {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #f9f9f9;
+  --text-main: #003274;
+  --text-muted: #555555;
+  --accent-blue: #003274;
+  --accent-gold: #A27751;
+  --accent-red: #A27751;
+  
+  --spacing-section: 8rem;
+  --spacing-element: 2rem;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  scroll-behavior: smooth;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Typography Base Grid for Elegance */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+  line-height: 1.1;
+  font-family: 'Area Inktrap Hairline', var(--font-cantarell), sans-serif;
+  font-weight: 100;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  margin-bottom: var(--spacing-element);
+}
+
+h2 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  margin-bottom: 1rem;
+}
+
+p {
+  font-family: var(--font-cantarell), sans-serif;
+  font-size: clamp(1.1rem, 2vw, 1.25rem);
+  line-height: 1.6;
+  max-width: 800px;
+  font-weight: 400;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-family: var(--font-cantarell), sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: transparent;
+  color: var(--accent-gold);
+  border: 1px solid var(--accent-gold);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background-color: var(--accent-gold);
+  color: var(--bg-primary);
+}
+
+.button.primary {
+  background-color: var(--accent-blue);
+  color: var(--bg-primary);
+  border-color: var(--accent-blue);
+}
+
+.button.primary:hover {
+  background-color: transparent;
+  color: var(--accent-blue);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+.section {
+  padding: var(--spacing-section) 0;
+}
+
+.mainLayout {
+  display: flex;
+  width: 100%;
+}
+
+.contentWrapper {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  min-height: 100vh;
+}
+
+@media (max-width: 992px) {
+  .mainLayout {
+    flex-direction: column;
+  }
+  .contentWrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+}
