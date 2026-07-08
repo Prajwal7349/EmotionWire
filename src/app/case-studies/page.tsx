@@ -13,7 +13,7 @@ export default function CaseStudiesIndex() {
     <div className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.title}>Case Studies</h1>
-        <p className={styles.subtitle}>Discover how we decode buyers' minds and drive emotional transformation.</p>
+        <p className={styles.subtitle}>Discover how we decode buyers&apos; minds and drive emotional transformation.</p>
       </header>
       
       <div className={styles.grid}>

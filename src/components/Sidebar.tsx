@@ -23,7 +23,7 @@ export default function Sidebar() {
           <Link href="/#our-story">Our Story</Link>
         </div>
         <div className={styles.navContact}>
-          <a href="/#contact" className={`button ${styles.navButton}`}>Contact</a>
+          <Link href="/#contact" className={`button ${styles.navButton}`}>Contact</Link>
         </div>
       </div>
     </nav>

@@ -92,7 +92,7 @@ export default function Footer() {
             <h3>Send us a message</h3>
             {status === 'success' ? (
               <div className={styles.successMessage}>
-                Thank you for reaching out! We'll get back to you shortly.
+                Thank you for reaching out! We&apos;ll get back to you shortly.
               </div>
             ) : (
               <form onSubmit={handleSubmit} className={styles.contactForm}>

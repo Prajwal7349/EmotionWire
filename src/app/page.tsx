@@ -1,5 +1,6 @@
 import styles from './page.module.css';
 import Footer from '@/components/Footer';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -16,13 +17,13 @@ export default function Home() {
         </video>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <h1 className={styles.heroTitle}>
-            We decode your buyers' minds before they <span className={styles.accentRed}>even know</span> what drives them.
+            We decode your buyers&apos; minds before they <span className={styles.accentRed}>even know</span> what drives them.
           </h1>
           <p className={styles.heroSubtitle}>
             We are a neuroscience-powered branding and communication agency specializing in uncovering the subconscious influences behind purchasing decisions. We align your brand with the emotional triggers that lead to real-world results.
           </p>
           <div className={styles.heroActions}>
-            <a href="/case-studies" className="button primary">Explore Our Work</a>
+            <Link href="/case-studies" className="button primary">Explore Our Work</Link>
           </div>
         </div>
       </header>
@@ -65,8 +66,8 @@ export default function Home() {
       <section className={`${styles.tickerSection}`}>
         <div className={styles.tickerOuter}>
           <div className={styles.tickerInner}>
-            <span>"EmotionWire brought brand consistency that shines through all our communications." — Amazatic</span>
-            <span>"They helped build our brand from the ground up, forging emotional connections." — GoD2C.ai</span>
+            <span>&quot;EmotionWire brought brand consistency that shines through all our communications.&quot; — Amazatic</span>
+            <span>&quot;They helped build our brand from the ground up, forging emotional connections.&quot; — GoD2C.ai</span>
           </div>
         </div>
       </section>
