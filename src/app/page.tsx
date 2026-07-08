@@ -1,4 +1,5 @@
 import styles from './page.module.css';
+import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
@@ -105,22 +106,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer id="contact" className={`${styles.footer} section`}>
-        <div className="container">
-          <h2>Connect with us.</h2>
-          <div className={styles.footerGrid}>
-            <div>
-              <a href="mailto:amit.dangle@emotionwire.co" className={styles.largeLink}>amit.dangle@emotionwire.co</a>
-              <br /><br />
-              <a href="tel:+919822066269" className={styles.largeLink}>+91-9822066269</a>
-            </div>
-            <div className={styles.footerInfo}>
-              <p>Copyright © 2026 EmotionWire.</p>
-              <p>All Rights Reserved.</p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }

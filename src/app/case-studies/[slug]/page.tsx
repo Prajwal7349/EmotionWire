@@ -2,6 +2,7 @@ import { caseStudies } from '@/data/case-studies';
 import { notFound } from 'next/navigation';
 import styles from './page.module.css';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 import { Metadata } from 'next';
 
 export async function generateStaticParams() {
@@ -118,12 +119,14 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
         )}
       </div>
 
-      <footer className={styles.footer}>
+      <section className={styles.footer}>
         <div className={styles.nextLabel}>Next Case Study</div>
         <Link href={`/case-studies/${nextStudy.slug}`} className={styles.nextLink}>
           {nextStudy.title} →
         </Link>
-      </footer>
+      </section>
+      
+      <Footer />
     </article>
   );
 }

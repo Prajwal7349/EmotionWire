@@ -183,48 +183,4 @@
   font-weight: 100;
 }
 
-.footer {
-  background-color: var(--bg-primary);
-  color: var(--text-main);
-  min-height: 40vh;
-  display: flex;
-  align-items: center;
-  border-top: 1px solid rgba(0, 50, 116, 0.1);
-}
 
-.footerGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-@media (min-width: 768px) {
-  .footerGrid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.largeLink {
-  font-size: clamp(1.25rem, 2vw, 2rem);
-  font-weight: 700;
-  transition: color 0.3s;
-  word-break: break-all;
-}
-
-.largeLink:hover {
-  color: var(--accent-gold);
-}
-
-.footerInfo {
-  text-align: left;
-  font-weight: 400;
-  align-self: flex-end;
-  color: var(--text-muted);
-}
-
-@media (min-width: 768px) {
-  .footerInfo {
-    text-align: right;
-  }
-}
