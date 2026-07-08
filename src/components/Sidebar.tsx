@@ -17,13 +17,13 @@ export default function Sidebar() {
           </Link>
         </div>
         <div className={styles.navLinks}>
-          <Link href="/#what-we-do">What We Do</Link>
-          <Link href="/#framework">Framework</Link>
+          <Link href="/what-we-do">What We Do</Link>
+          <Link href="/framework">Framework</Link>
           <Link href="/case-studies">Case Studies</Link>
-          <Link href="/#our-story">Our Story</Link>
+          <Link href="/our-story">Our Story</Link>
         </div>
         <div className={styles.navContact}>
-          <a href="/#contact" className={`button ${styles.navButton}`}>Contact</a>
+          <a href="/contact" className={`button ${styles.navButton}`}>Contact</a>
         </div>
       </div>
     </nav>
