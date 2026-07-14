@@ -1,24 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Footer.module.css';
 
 const COUNTRY_CODES = [
-  { code: '+1', name: 'United States' },
-  { code: '+1', name: 'Canada' },
-  { code: '+44', name: 'United Kingdom' },
-  { code: '+61', name: 'Australia' },
-  { code: '+91', name: 'India' },
-  { code: '+49', name: 'Germany' },
-  { code: '+33', name: 'France' },
-  { code: '+81', name: 'Japan' },
-  { code: '+86', name: 'China' },
-  { code: '+971', name: 'United Arab Emirates' },
-  { code: '+65', name: 'Singapore' },
-  { code: '+353', name: 'Ireland' },
-  { code: '+31', name: 'Netherlands' },
-  { code: '+46', name: 'Sweden' },
-  { code: '+41', name: 'Switzerland' },
+  { code: '+1', name: 'United States', minLength: 10, maxLength: 10 },
+  { code: '+1', name: 'Canada', minLength: 10, maxLength: 10 },
+  { code: '+44', name: 'United Kingdom', minLength: 10, maxLength: 11 },
+  { code: '+61', name: 'Australia', minLength: 9, maxLength: 9 },
+  { code: '+91', name: 'India', minLength: 10, maxLength: 10 },
+  { code: '+49', name: 'Germany', minLength: 10, maxLength: 11 },
+  { code: '+33', name: 'France', minLength: 9, maxLength: 9 },
+  { code: '+81', name: 'Japan', minLength: 10, maxLength: 10 },
+  { code: '+86', name: 'China', minLength: 11, maxLength: 11 },
+  { code: '+971', name: 'United Arab Emirates', minLength: 9, maxLength: 9 },
+  { code: '+65', name: 'Singapore', minLength: 8, maxLength: 8 },
+  { code: '+353', name: 'Ireland', minLength: 7, maxLength: 9 },
+  { code: '+31', name: 'Netherlands', minLength: 9, maxLength: 9 },
+  { code: '+46', name: 'Sweden', minLength: 7, maxLength: 9 },
+  { code: '+41', name: 'Switzerland', minLength: 9, maxLength: 9 },
 ];
 
 export default function Footer() {
@@ -32,10 +32,38 @@ export default function Footer() {
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
+  useEffect(() => {
+    // Auto-detect the user's country code based on their IP address
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.country_calling_code) {
+          // Verify if we have this country code in our predefined list
+          const exists = COUNTRY_CODES.find(c => c.code === data.country_calling_code);
+          if (exists) {
+            setFormData(prev => ({ ...prev, countryCode: data.country_calling_code }));
+          }
+        }
+      })
+      .catch(err => {
+        console.error('Failed to auto-detect country code:', err);
+      });
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    if (name === 'phoneNumber') {
+      // Strip out anything that is not a digit
+      const onlyDigits = value.replace(/\D/g, '');
+      setFormData(prev => ({ ...prev, [name]: onlyDigits }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
+
+  // Find validation rules for current country code
+  const currentCountryConfig = COUNTRY_CODES.find(c => c.code === formData.countryCode) || { minLength: 7, maxLength: 15 };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,8 +207,12 @@ export default function Footer() {
                       required 
                       value={formData.phoneNumber}
                       onChange={handleChange}
-                      placeholder="555-0123"
+                      placeholder="5550123"
                       className={styles.phoneInput}
+                      minLength={currentCountryConfig.minLength}
+                      maxLength={currentCountryConfig.maxLength}
+                      pattern="[0-9]*"
+                      title={`Please enter ${currentCountryConfig.minLength === currentCountryConfig.maxLength ? 'exactly ' + currentCountryConfig.maxLength : 'between ' + currentCountryConfig.minLength + ' and ' + currentCountryConfig.maxLength} digits`}
                     />
                   </div>
                 </div>
