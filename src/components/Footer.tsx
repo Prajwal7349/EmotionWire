@@ -1,24 +1,25 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { AsYouType, CountryCode, isValidPhoneNumber } from 'libphonenumber-js';
 import styles from './Footer.module.css';
 
-const COUNTRY_CODES = [
-  { code: '+1', name: 'United States', minLength: 10, maxLength: 10 },
-  { code: '+1', name: 'Canada', minLength: 10, maxLength: 10 },
-  { code: '+44', name: 'United Kingdom', minLength: 10, maxLength: 11 },
-  { code: '+61', name: 'Australia', minLength: 9, maxLength: 9 },
-  { code: '+91', name: 'India', minLength: 10, maxLength: 10 },
-  { code: '+49', name: 'Germany', minLength: 10, maxLength: 11 },
-  { code: '+33', name: 'France', minLength: 9, maxLength: 9 },
-  { code: '+81', name: 'Japan', minLength: 10, maxLength: 10 },
-  { code: '+86', name: 'China', minLength: 11, maxLength: 11 },
-  { code: '+971', name: 'United Arab Emirates', minLength: 9, maxLength: 9 },
-  { code: '+65', name: 'Singapore', minLength: 8, maxLength: 8 },
-  { code: '+353', name: 'Ireland', minLength: 7, maxLength: 9 },
-  { code: '+31', name: 'Netherlands', minLength: 9, maxLength: 9 },
-  { code: '+46', name: 'Sweden', minLength: 7, maxLength: 9 },
-  { code: '+41', name: 'Switzerland', minLength: 9, maxLength: 9 },
+const COUNTRY_CODES: { code: string, iso: CountryCode, name: string, placeholder: string, maxDigits: number }[] = [
+  { code: '+1', iso: 'US', name: 'United States', placeholder: '5551234567', maxDigits: 10 },
+  { code: '+1', iso: 'CA', name: 'Canada', placeholder: '5551234567', maxDigits: 10 },
+  { code: '+44', iso: 'GB', name: 'United Kingdom', placeholder: '7911123456', maxDigits: 11 },
+  { code: '+61', iso: 'AU', name: 'Australia', placeholder: '412345678', maxDigits: 9 },
+  { code: '+91', iso: 'IN', name: 'India', placeholder: '9876543210', maxDigits: 10 },
+  { code: '+49', iso: 'DE', name: 'Germany', placeholder: '1512345678', maxDigits: 11 },
+  { code: '+33', iso: 'FR', name: 'France', placeholder: '612345678', maxDigits: 9 },
+  { code: '+81', iso: 'JP', name: 'Japan', placeholder: '9012345678', maxDigits: 10 },
+  { code: '+86', iso: 'CN', name: 'China', placeholder: '13123456789', maxDigits: 11 },
+  { code: '+971', iso: 'AE', name: 'United Arab Emirates', placeholder: '501234567', maxDigits: 9 },
+  { code: '+65', iso: 'SG', name: 'Singapore', placeholder: '91234567', maxDigits: 8 },
+  { code: '+353', iso: 'IE', name: 'Ireland', placeholder: '851234567', maxDigits: 9 },
+  { code: '+31', iso: 'NL', name: 'Netherlands', placeholder: '612345678', maxDigits: 9 },
+  { code: '+46', iso: 'SE', name: 'Sweden', placeholder: '701234567', maxDigits: 9 },
+  { code: '+41', iso: 'CH', name: 'Switzerland', placeholder: '791234567', maxDigits: 9 },
 ];
 
 export default function Footer() {
@@ -27,21 +28,22 @@ export default function Footer() {
     lastName: '',
     companyName: '',
     email: '',
-    countryCode: '+1',
+    countryIso: 'US' as CountryCode,
     phoneNumber: '',
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [phoneError, setPhoneError] = useState(false);
 
   useEffect(() => {
-    // Auto-detect the user's country code based on their IP address
+    // Auto-detect the user's country based on their IP address
     fetch('https://ipapi.co/json/')
       .then(res => res.json())
       .then(data => {
-        if (data && data.country_calling_code) {
+        if (data && data.country_code) {
           // Verify if we have this country code in our predefined list
-          const exists = COUNTRY_CODES.find(c => c.code === data.country_calling_code);
+          const exists = COUNTRY_CODES.find(c => c.iso === data.country_code);
           if (exists) {
-            setFormData(prev => ({ ...prev, countryCode: data.country_calling_code }));
+            setFormData(prev => ({ ...prev, countryIso: data.country_code as CountryCode }));
           }
         }
       })
@@ -54,32 +56,71 @@ export default function Footer() {
     const { name, value } = e.target;
     
     if (name === 'phoneNumber') {
-      // Strip out anything that is not a digit
-      const onlyDigits = value.replace(/\D/g, '');
-      setFormData(prev => ({ ...prev, [name]: onlyDigits }));
+      const currentCountryConfig = COUNTRY_CODES.find(c => c.iso === formData.countryIso) || COUNTRY_CODES[0];
+      const rawDigits = value.replace(/\D/g, '');
+      
+      // Block typing if it exceeds the max allowed digits for this country
+      if (rawDigits.length > currentCountryConfig.maxDigits) {
+        return;
+      }
+
+      // Format phone number as they type using libphonenumber-js
+      const formatter = new AsYouType(formData.countryIso);
+      const formatted = formatter.input(value);
+      setFormData(prev => ({ ...prev, [name]: formatted }));
+      
+      // Clear error as they type
+      if (phoneError) setPhoneError(false);
+    } else if (name === 'countryIso') {
+      // If country changes, re-format the existing phone number for the new country
+      const formatter = new AsYouType(value as CountryCode);
+      // Strip formatting first to get pure digits before re-formatting
+      const rawDigits = formData.phoneNumber.replace(/\D/g, '');
+      const formatted = formatter.input(rawDigits);
+      
+      setFormData(prev => ({ 
+        ...prev, 
+        countryIso: value as CountryCode,
+        phoneNumber: formatted 
+      }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
-  // Find validation rules for current country code
-  const currentCountryConfig = COUNTRY_CODES.find(c => c.code === formData.countryCode) || { minLength: 7, maxLength: 15 };
+  const currentCountryConfig = COUNTRY_CODES.find(c => c.iso === formData.countryIso) || COUNTRY_CODES[0];
+  
+  // Format the placeholder so it shows up perfectly masked (e.g. "(555) 123-4567")
+  const formattedPlaceholder = new AsYouType(formData.countryIso).input(currentCountryConfig.placeholder);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate phone number strictly before submission
+    if (!isValidPhoneNumber(formData.phoneNumber, formData.countryIso)) {
+      setPhoneError(true);
+      return;
+    }
+    
     setStatus('loading');
     
     // Use the exact Formspree endpoint provided
     const formspreeEndpoint = 'https://formspree.io/f/xojgvnzo';
 
     try {
+      // We submit the actual dial code (+1) instead of ISO code (US) for the backend data
+      const submissionData = {
+        ...formData,
+        countryCode: currentCountryConfig.code,
+      };
+
       const response = await fetch(formspreeEndpoint, {
         method: 'POST',
         headers: { 
           'Accept': 'application/json',
           'Content-Type': 'application/json' 
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submissionData),
       });
 
       if (response.ok) {
@@ -89,7 +130,7 @@ export default function Footer() {
           lastName: '',
           companyName: '',
           email: '',
-          countryCode: '+1',
+          countryIso: 'US',
           phoneNumber: '',
         });
       } else {
@@ -130,7 +171,7 @@ export default function Footer() {
                 Thank you for reaching out! We&apos;ll get back to you shortly.
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className={styles.contactForm}>
+              <form onSubmit={handleSubmit} className={styles.contactForm} noValidate>
                 <div className={styles.row}>
                   <div className={styles.inputGroup}>
                     <label htmlFor="firstName">First Name</label>
@@ -188,14 +229,14 @@ export default function Footer() {
                   <label htmlFor="phoneNumber">Phone Number</label>
                   <div className={styles.phoneGroup}>
                     <select 
-                      name="countryCode" 
-                      id="countryCode" 
-                      value={formData.countryCode}
+                      name="countryIso" 
+                      id="countryIso" 
+                      value={formData.countryIso}
                       onChange={handleChange}
                       className={styles.countrySelect}
                     >
                       {COUNTRY_CODES.map((country, idx) => (
-                        <option key={idx} value={country.code}>
+                        <option key={idx} value={country.iso}>
                           {country.name} ({country.code})
                         </option>
                       ))}
@@ -207,14 +248,16 @@ export default function Footer() {
                       required 
                       value={formData.phoneNumber}
                       onChange={handleChange}
-                      placeholder="5550123"
+                      placeholder={formattedPlaceholder}
                       className={styles.phoneInput}
-                      minLength={currentCountryConfig.minLength}
-                      maxLength={currentCountryConfig.maxLength}
-                      pattern="[0-9]*"
-                      title={`Please enter ${currentCountryConfig.minLength === currentCountryConfig.maxLength ? 'exactly ' + currentCountryConfig.maxLength : 'between ' + currentCountryConfig.minLength + ' and ' + currentCountryConfig.maxLength} digits`}
+                      style={phoneError ? { borderColor: '#e74c3c' } : {}}
                     />
                   </div>
+                  {phoneError && (
+                    <span style={{ color: '#e74c3c', fontSize: '0.8rem', marginTop: '-0.5rem' }}>
+                      Please enter a valid phone number for {currentCountryConfig.name}.
+                    </span>
+                  )}
                 </div>
 
                 <button 

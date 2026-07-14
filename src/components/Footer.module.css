@@ -200,3 +200,21 @@
   text-align: center;
   margin-top: 0.5rem;
 }
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 3rem 0;
+  }
+  
+  .formContainer {
+    padding: 1.5rem;
+  }
+  
+  .phoneGroup {
+    flex-direction: column;
+  }
+  
+  .countrySelect {
+    max-width: 100%;
+  }
+}

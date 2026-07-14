@@ -12,6 +12,13 @@
   --spacing-element: 2rem;
 }
 
+@media (max-width: 768px) {
+  :root {
+    --spacing-section: 4rem;
+    --spacing-element: 1.5rem;
+  }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -132,5 +139,6 @@ p {
   .contentWrapper {
     margin-left: 0;
     width: 100%;
+    padding-top: 72px; /* Accounts for the fixed top navbar */
   }
 }

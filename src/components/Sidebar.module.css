@@ -6,7 +6,7 @@
   height: 100vh;
   background: var(--accent-gold);
   border-right: 1px solid rgba(0, 50, 116, 0.1);
-  z-index: 100;
+  z-index: 1000;
   padding: 3rem 2rem;
   display: flex;
   flex-direction: column;
@@ -16,7 +16,10 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  justify-content: space-between;
+}
+
+.navHeader {
+  display: block;
 }
 
 .logo {
@@ -28,6 +31,17 @@
 .logo img {
   max-width: 180px;
   height: auto;
+}
+
+.hamburger {
+  display: none;
+}
+
+.navMenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
 }
 
 .navLinks {
@@ -69,6 +83,9 @@
 .navButton {
   color: var(--bg-primary) !important;
   border-color: var(--bg-primary) !important;
+  width: 100%;
+  display: block;
+  text-align: center;
 }
 
 .navButton:hover {
@@ -76,27 +93,127 @@
   color: var(--accent-gold) !important;
 }
 
+.overlay {
+  display: none;
+}
+
+/* Mobile & Tablet Styles */
 @media (max-width: 992px) {
   .nav {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: auto;
+    padding: 1.2rem 5%;
     border-right: none;
-    border-bottom: 1px solid rgba(0, 50, 116, 0.1);
-    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    background: var(--accent-gold);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   }
+  
   .navInner {
-    flex-direction: row;
+    flex-direction: column;
+  }
+
+  .navHeader {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    width: 100%;
   }
-  .navLinks {
-    flex-direction: row;
-    display: none;
-  }
-  .navContact {
-    display: none;
-  }
+
   .logo {
     margin-bottom: 0;
   }
+  
+  .logo img {
+    max-width: 140px;
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 28px;
+    height: 22px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+  }
+
+  .hamburgerLine {
+    width: 100%;
+    height: 2px;
+    background: var(--bg-primary);
+    transition: all 0.3s linear;
+    transform-origin: 1px;
+  }
+
+  .lineOpen1 {
+    transform: rotate(45deg);
+  }
+
+  .lineOpen2 {
+    opacity: 0;
+  }
+
+  .lineOpen3 {
+    transform: rotate(-45deg);
+  }
+
+  .navMenu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 65px);
+    background: var(--accent-gold);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem 5%;
+    transform: translateY(-150%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.4s ease, visibility 0.4s;
+    z-index: -1;
+  }
+
+  .menuOpen {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .navLinks {
+    gap: 2rem;
+    font-size: 1.3rem;
+  }
+
+  .navContact {
+    margin-bottom: 2rem;
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+  }
+  
+  /* I also need to ensure overlay can be toggled by passing an open state class or just using :global */
 }
+
+/* Because overlay is rendered conditionally in React {isOpen && ...}, it just mounts. The above opacity transition won't work on mount unless we render it always. I will leave it as instant since it mounts/unmounts in React. */
