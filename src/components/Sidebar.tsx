@@ -18,6 +18,7 @@ export default function Sidebar() {
         </div>
         <div className={styles.navLinks}>
           <Link href="/#what-we-do">What We Do</Link>
+          <Link href="/offerings">Offerings</Link>
           <Link href="/#framework">Framework</Link>
           <Link href="/case-studies">Case Studies</Link>
           <Link href="/#our-story">Our Story</Link>

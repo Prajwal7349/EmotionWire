@@ -41,10 +41,16 @@ export default function Footer() {
     e.preventDefault();
     setStatus('loading');
     
+    // Use the exact Formspree endpoint provided
+    const formspreeEndpoint = 'https://formspree.io/f/xojgvnzo';
+
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch(formspreeEndpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Accept': 'application/json',
+          'Content-Type': 'application/json' 
+        },
         body: JSON.stringify(formData),
       });
 
@@ -59,6 +65,8 @@ export default function Footer() {
           phoneNumber: '',
         });
       } else {
+        const errorData = await response.json();
+        console.error('Formspree error:', errorData);
         setStatus('error');
       }
     } catch (error) {
@@ -77,7 +85,6 @@ export default function Footer() {
               <a href="mailto:amit.dangle@emotionwire.co" className={styles.largeLink}>
                 amit.dangle@emotionwire.co
               </a>
-              <br /><br />
               <a href="tel:+919822066269" className={styles.largeLink}>
                 +91-9822066269
               </a>
