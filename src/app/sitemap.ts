@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next';
 
+export const dynamic = 'force-static';
+
 export default function sitemap(): MetadataRoute.Sitemap {
   // Base URL of the website. Update this to your production domain before launch.
   const baseUrl = 'https://www.emotionwire.com';
