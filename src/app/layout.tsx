@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cantarell } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 
@@ -22,6 +23,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={cantarell.variable} data-scroll-behavior="smooth">
       <body style={{ fontFamily: "var(--font-cantarell), sans-serif" }}>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-33KN2QQ1NY"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-33KN2QQ1NY');
+          `}
+        </Script>
         <div className="mainLayout">
           <Sidebar />
           <main className="contentWrapper">
