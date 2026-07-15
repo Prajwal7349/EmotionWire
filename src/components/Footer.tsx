@@ -36,19 +36,19 @@ export default function Footer() {
 
   useEffect(() => {
     // Auto-detect the user's country based on their IP address
-    fetch('https://ipapi.co/json/')
+    fetch('https://ipinfo.io/json')
       .then(res => res.json())
       .then(data => {
-        if (data && data.country_code) {
+        if (data && data.country) {
           // Verify if we have this country code in our predefined list
-          const exists = COUNTRY_CODES.find(c => c.iso === data.country_code);
+          const exists = COUNTRY_CODES.find(c => c.iso === data.country);
           if (exists) {
-            setFormData(prev => ({ ...prev, countryIso: data.country_code as CountryCode }));
+            setFormData(prev => ({ ...prev, countryIso: data.country as CountryCode }));
           }
         }
       })
       .catch(err => {
-        console.error('Failed to auto-detect country code:', err);
+        console.warn('Failed to auto-detect country code (falling back to default):', err);
       });
   }, []);
 

@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cantarell.variable}>
+    <html lang="en" className={cantarell.variable} data-scroll-behavior="smooth">
       <body style={{ fontFamily: "var(--font-cantarell), sans-serif" }}>
         <div className="mainLayout">
           <Sidebar />
