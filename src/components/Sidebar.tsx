@@ -47,9 +47,9 @@ export default function Sidebar() {
                 />
               </Link>
             </div>
-            
-            <button 
-              className={styles.hamburger} 
+
+            <button
+              className={styles.hamburger}
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
@@ -58,12 +58,12 @@ export default function Sidebar() {
               <div className={`${styles.hamburgerLine} ${isOpen ? styles.lineOpen3 : ''}`}></div>
             </button>
           </div>
-          
+
           <div className={`${styles.navMenu} ${isOpen ? styles.menuOpen : ''}`}>
             <div className={styles.navLinks}>
               <Link href="/#what-we-do" onClick={closeMenu}>What We Do</Link>
-              <Link href="/offerings" onClick={closeMenu}>Offerings</Link>
               <Link href="/#framework" onClick={closeMenu}>Framework</Link>
+              <Link href="/offerings" onClick={closeMenu}>Offerings</Link>
               <Link href="/case-studies" onClick={closeMenu}>Case Studies</Link>
               <Link href="/#our-story" onClick={closeMenu}>Our Story</Link>
             </div>
