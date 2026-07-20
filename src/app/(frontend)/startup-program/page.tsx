@@ -13,7 +13,7 @@ export default function StartupProgramPage() {
     <article className={styles.offering}>
       <header className={styles.hero}>
         <h1 className={styles.title}>Build for Growth, Not Just for Clout</h1>
-        <p className={styles.subtitle}>Startup Program</p>
+        <p className={styles.subtitle}>Program for Startups</p>
       </header>
 
       <div className={styles.content}>
