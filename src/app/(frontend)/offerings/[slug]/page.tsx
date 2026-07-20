@@ -1,36 +1,40 @@
-import { offerings } from '@/data/offerings';
 import { notFound } from 'next/navigation';
 import styles from './page.module.css';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Metadata } from 'next';
+import { client } from '@/sanity/lib/client';
 
 export async function generateStaticParams() {
-  return offerings.map((offering) => ({
-    slug: offering.slug,
-  }));
+  const sanityOfferings = await client.fetch(`*[_type == "offering"] { "slug": slug.current }`);
+  return sanityOfferings;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const offering = offerings.find(o => o.slug === slug);
+  const offering = await client.fetch(`*[_type == "offering" && slug.current == $slug][0]{ title, seo }`, { slug });
   if (!offering) return { title: 'Not Found' };
   return {
-    title: `${offering.title} | EmotionWire Offerings`,
+    title: offering.seo?.metaTitle || `${offering.title} | EmotionWire`,
+    description: offering.seo?.metaDescription,
   };
 }
 
 export default async function OfferingPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const offering = offerings.find(o => o.slug === slug);
+  const offering = await client.fetch(`*[_type == "offering" && slug.current == $slug][0] {
+    ...,
+    "slug": slug.current
+  }`, { slug });
   
   if (!offering) {
     notFound();
   }
 
   // Find next offering
-  const currentIndex = offerings.findIndex(o => o.slug === slug);
-  const nextOffering = offerings[(currentIndex + 1) % offerings.length];
+  const allOfferings = await client.fetch(`*[_type == "offering"] | order(orderRank) { "slug": slug.current, title }`);
+  const currentIndex = allOfferings.findIndex((o: any) => o.slug === slug);
+  const nextOffering = allOfferings[(currentIndex + 1) % allOfferings.length] || allOfferings[0];
 
   return (
     <article className={styles.offering}>
@@ -44,7 +48,7 @@ export default async function OfferingPage({ params }: { params: Promise<{ slug:
           <section className={styles.section}>
             <div className={styles.sectionLabel}>Overview</div>
             <div className={styles.sectionBody}>
-              {offering.overview.map((para, i) => (
+              {offering.overview.map((para: string, i: number) => (
                 <p key={i}>{para}</p>
               ))}
             </div>
@@ -55,19 +59,19 @@ export default async function OfferingPage({ params }: { params: Promise<{ slug:
           <section className={styles.section}>
             <div className={styles.sectionLabel}>{offering.problem.title}</div>
             <div className={styles.sectionBody}>
-              {offering.problem.description.map((para, i) => (
+              {offering.problem.description.map((para: string, i: number) => (
                 <p key={i}>{para}</p>
               ))}
             </div>
           </section>
         )}
 
-        {offering.features && offering.features.length > 0 && offering.features.map((featureBlock, idx) => (
+        {offering.features && offering.features.length > 0 && offering.features.map((featureBlock: any, idx: number) => (
           <section key={idx} className={styles.section}>
             <div className={styles.sectionLabel}>{featureBlock.title}</div>
             <div className={styles.sectionBody}>
               <ul className={styles.list}>
-                {featureBlock.items.map((item, i) => (
+                {featureBlock.items.map((item: string, i: number) => (
                   <li key={i} className={styles.listItem}>{item}</li>
                 ))}
               </ul>

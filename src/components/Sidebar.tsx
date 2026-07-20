@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Sidebar.module.css';
 
-export default function Sidebar() {
+export default function Sidebar({ hasBlogs = false }: { hasBlogs?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const closeMenu = () => setIsOpen(false);
@@ -64,7 +64,9 @@ export default function Sidebar() {
               <Link href="/#what-we-do" onClick={closeMenu}>What We Do</Link>
               <Link href="/#framework" onClick={closeMenu}>Framework</Link>
               <Link href="/offerings" onClick={closeMenu}>Offerings</Link>
+              <Link href="/startup-program" onClick={closeMenu}>Startup Program</Link>
               <Link href="/case-studies" onClick={closeMenu}>Case Studies</Link>
+              {hasBlogs && <Link href="/blogs" onClick={closeMenu}>Blogs</Link>}
               <Link href="/#our-story" onClick={closeMenu}>Our Story</Link>
             </div>
             <div className={styles.navContact}>

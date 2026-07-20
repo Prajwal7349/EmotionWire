@@ -1,36 +1,41 @@
-import { caseStudies } from '@/data/case-studies';
 import { notFound } from 'next/navigation';
 import styles from './page.module.css';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Metadata } from 'next';
+import { client } from '@/sanity/lib/client';
 
 export async function generateStaticParams() {
-  return caseStudies.map((study) => ({
-    slug: study.slug,
-  }));
+  const sanityStudies = await client.fetch(`*[_type == "caseStudy"] { "slug": slug.current }`);
+  return sanityStudies;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const study = caseStudies.find(s => s.slug === slug);
+  const study = await client.fetch(`*[_type == "caseStudy" && slug.current == $slug][0]{ title, seo }`, { slug });
   if (!study) return { title: 'Not Found' };
   return {
-    title: `${study.title} | EmotionWire Case Studies`,
+    title: study.seo?.metaTitle || `${study.title} | EmotionWire Case Studies`,
+    description: study.seo?.metaDescription,
   };
 }
 
 export default async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const study = caseStudies.find(s => s.slug === slug);
+  const study = await client.fetch(`*[_type == "caseStudy" && slug.current == $slug][0] {
+    ...,
+    "slug": slug.current,
+    "challenge": summary
+  }`, { slug });
   
   if (!study) {
     notFound();
   }
 
   // Find next study
-  const currentIndex = caseStudies.findIndex(s => s.slug === slug);
-  const nextStudy = caseStudies[(currentIndex + 1) % caseStudies.length];
+  const allCaseStudies = await client.fetch(`*[_type == "caseStudy"] | order(orderRank) { "slug": slug.current, title }`);
+  const currentIndex = allCaseStudies.findIndex((s: any) => s.slug === slug);
+  const nextStudy = allCaseStudies[(currentIndex + 1) % allCaseStudies.length] || allCaseStudies[0];
 
   return (
     <article className={styles.caseStudy}>
@@ -42,7 +47,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
         <section className={styles.section}>
           <div className={styles.sectionLabel}>The Challenge</div>
           <div className={styles.sectionBody}>
-            {study.challenge.split('\n\n').map((para, i) => (
+            {study.challenge?.split('\n\n').map((para: string, i: number) => (
               <p key={i}>{para}</p>
             ))}
           </div>
@@ -51,7 +56,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
         <section className={styles.section}>
           <div className={styles.sectionLabel}>Our Approach</div>
           <div className={styles.sectionBody}>
-            {study.approach.split('\n\n').map((para, i) => (
+            {study.approach?.split('\n\n').map((para: string, i: number) => (
               <p key={i}>{para}</p>
             ))}
           </div>
@@ -61,12 +66,12 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
           <section className={styles.section}>
             <div className={styles.sectionLabel}>The Engine We Built</div>
             <div className={styles.sectionBody}>
-              {study.engine.split('\n\n').map((para, i) => {
+              {study.engine.split('\n\n').map((para: string, i: number) => {
                 // simple markdown bold parsing for "**bold**"
                 const parts = para.split(/(\*\*.*?\*\*)/g);
                 return (
                   <p key={i}>
-                    {parts.map((part, index) => 
+                    {parts.map((part: string, index: number) => 
                       part.startsWith('**') && part.endsWith('**') 
                         ? <strong key={index}>{part.slice(2, -2)}</strong> 
                         : part
@@ -81,7 +86,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
         <section className={styles.section}>
           <div className={styles.sectionLabel}>The Emotional Shift</div>
           <div className={styles.sectionBody}>
-            {study.emotionalShift.split('\n\n').map((para, i) => (
+            {study.emotionalShift?.split('\n\n').map((para: string, i: number) => (
               <p key={i}>{para}</p>
             ))}
           </div>
@@ -90,13 +95,13 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
         <section className={styles.section}>
           <div className={styles.sectionLabel}>The Outcome</div>
           <div className={styles.sectionBody}>
-            {study.outcome.split('\n\n').map((para, i) => (
+            {study.outcome?.split('\n\n').map((para: string, i: number) => (
               <p key={i}>{para}</p>
             ))}
             
             {study.metrics && (
               <div className={styles.metricsGrid}>
-                {study.metrics.map((metric, i) => (
+                {study.metrics.map((metric: any, i: number) => (
                   <div key={i} className={styles.metricCard}>
                     <div className={styles.metricValue}>{metric.value}</div>
                     <div className={styles.metricLabel}>{metric.label}</div>
@@ -111,7 +116,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
           <section className={styles.section}>
             <div className={styles.sectionLabel}>The Impact</div>
             <div className={styles.sectionBody}>
-              {study.impact.split('\n\n').map((para, i) => (
+              {study.impact.split('\n\n').map((para: string, i: number) => (
                 <p key={i}>{para}</p>
               ))}
             </div>

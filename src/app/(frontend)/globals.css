@@ -31,6 +31,7 @@ body {
   overflow-x: hidden;
   background-color: var(--bg-primary);
   color: var(--text-main);
+  font-family: var(--font-cantarell), sans-serif;
   scroll-behavior: smooth;
 }
 
