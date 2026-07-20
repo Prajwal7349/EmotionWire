@@ -1,28 +1,21 @@
 import styles from './page.module.css';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { client } from '@/sanity/lib/client';
 
 import { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const homeData = await client.fetch(`*[_type == "homePage"][0]{ seo }`, {}, { next: { revalidate: 60 } });
-  if (homeData?.seo) {
-    return {
-      title: homeData.seo.metaTitle,
-      description: homeData.seo.metaDescription,
-    };
-  }
-  return {};
+  return {
+    title: 'EmotionWire | Neuromarketing & Brand Strategy',
+    description: 'We decode your buyers\' minds before they even know what drives them. EmotionWire is a neuroscience-powered branding agency.',
+  };
 }
 
-export default async function Home() {
-  const homeData = await client.fetch(`*[_type == "homePage"][0]`, {}, { next: { revalidate: 60 } });
-
-  const heroTitle = homeData?.hero?.title || "We decode your buyers' minds before they <span class=\"accentRed\">even know</span> what drives them.";
-  const heroSubtitle = homeData?.hero?.subtitle || "We are a neuroscience-powered branding and communication agency specializing in uncovering the subconscious influences behind purchasing decisions. We align your brand with the emotional triggers that lead to real-world results.";
+export default function Home() {
+  const heroTitle = "We decode your buyers' minds before they <span class=\"accentRed\">even know</span> what drives them.";
+  const heroSubtitle = "We are a neuroscience-powered branding and communication agency specializing in uncovering the subconscious influences behind purchasing decisions. We align your brand with the emotional triggers that lead to real-world results.";
   
-  const whatWeDo = homeData?.whatWeDo || [
+  const whatWeDo = [
     {
       title: 'Brand Strategy & Emotional Positioning',
       description: 'We build emotionally intelligent brands grounded in neuroscience and strategically aligned for success.',
@@ -40,12 +33,12 @@ export default async function Home() {
     }
   ];
 
-  const tickerItems = homeData?.ticker || [
+  const tickerItems = [
     "\"EmotionWire brought brand consistency that shines through all our communications.\" — Amazatic",
     "\"They helped build our brand from the ground up, forging emotional connections.\" — GoD2C.ai"
   ];
 
-  const frameworkSteps = homeData?.framework?.steps || [
+  const frameworkSteps = [
     "Understand the buyer's psychological foundations",
     "Surface emotional outcomes they seek or avoid",
     "Decode cognitive and emotional behavior",
@@ -56,12 +49,12 @@ export default async function Home() {
     "Track engagement, sentiment, and conversion"
   ];
 
-  const storyParagraphs = homeData?.story || [
+  const storyParagraphs = [
     "Founded in 2025 by Amit Dangle, a seasoned marketing expert with 25 years of global experience, EmotionWire was inspired by the realization that emotion-led selling doesn’t just resonate, it delivers measurable revenue growth and sustainable competitive advantage.",
     "Leveraging deep expertise in emotional influence and behavioral science, Amit developed EmotionWire to systematize the neuroscience behind branding. Our structured frameworks help brands influence hearts and minds simultaneously, ensuring emotional connections translate directly into business outcomes."
   ];
   
-  const storyClosing = homeData?.storyClosing || "We don’t merely believe in emotional branding, we engineer it for measurable success.";
+  const storyClosing = "We don’t merely believe in emotional branding, we engineer it for measurable success.";
 
   return (
     <>
@@ -117,8 +110,8 @@ export default async function Home() {
 
       <section id="framework" className={`${styles.framework} section`}>
         <div className="container">
-          <h2>{homeData?.framework?.title || 'Deterministic Path Framework'}</h2>
-          <p className={styles.intro}>{homeData?.framework?.intro || 'A proven 8-step process transforming brands from mere noise into indispensable market leaders.'}</p>
+          <h2>Deterministic Path Framework</h2>
+          <p className={styles.intro}>A proven 8-step process transforming brands from mere noise into indispensable market leaders.</p>
           <div className={styles.stepperContainer}>
             {frameworkSteps.map((step: string, index: number) => (
               <div key={index} className={styles.step}>
@@ -132,7 +125,7 @@ export default async function Home() {
 
       <section id="our-story" className={`${styles.story} section`}>
         <div className="container">
-          <h2>{homeData?.storyTitle || "Our Story"}</h2>
+          <h2>Our Story</h2>
           <div className={styles.storyContent}>
             {storyParagraphs.map((para: string, idx: number) => (
               <p key={idx}>{para}</p>

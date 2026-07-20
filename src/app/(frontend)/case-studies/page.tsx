@@ -2,30 +2,37 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import { Metadata } from 'next';
 
-import { client } from '@/sanity/lib/client';
-
 export async function generateMetadata(): Promise<Metadata> {
-  const pageData = await client.fetch(`*[_type == "caseStudiesPage"][0]{ seo }`, {}, { next: { revalidate: 60 } });
-  
   return {
-    title: pageData?.seo?.metaTitle || 'Case Studies | EmotionWire',
-    description: pageData?.seo?.metaDescription || 'Explore our latest case studies and success stories.',
+    title: 'Case Studies | EmotionWire',
+    description: 'Explore our latest case studies and success stories.',
   };
 }
 
-export default async function CaseStudiesIndex() {
-  const pageData = await client.fetch(`*[_type == "caseStudiesPage"][0]`, {}, { next: { revalidate: 60 } });
-  const allCaseStudies = await client.fetch(`*[_type == "caseStudy"] | order(orderRank) {
-    "slug": slug.current,
-    title,
-    clientName
-  }`, {}, { next: { revalidate: 60 } });
+export default function CaseStudiesIndex() {
+  const allCaseStudies = [
+    {
+      slug: 'full-funnel-growth-engine-security',
+      title: 'Full Funnel Growth Engine for Security',
+      clientName: 'Security Client'
+    },
+    {
+      slug: 'repositioning-it-services-brand',
+      title: 'Repositioning IT Services Brand',
+      clientName: 'IT Services Client'
+    },
+    {
+      slug: 'us-lead-generation-saas',
+      title: 'US Lead Generation SaaS',
+      clientName: 'SaaS Client'
+    }
+  ];
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>{pageData?.title || 'Case Studies'}</h1>
-        <p className={styles.subtitle}>{pageData?.subtitle || 'Discover how we decode buyers\' minds and drive emotional transformation.'}</p>
+        <h1 className={styles.title}>Case Studies</h1>
+        <p className={styles.subtitle}>Discover how we decode buyers' minds and drive emotional transformation.</p>
       </header>
       
       <div className={styles.grid}>

@@ -2,29 +2,25 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import { Metadata } from 'next';
 
-import { client } from '@/sanity/lib/client';
-
 export async function generateMetadata(): Promise<Metadata> {
-  const pageData = await client.fetch(`*[_type == "offeringsPage"][0]{ seo }`, {}, { next: { revalidate: 60 } });
-  
   return {
-    title: pageData?.seo?.metaTitle || 'Offerings | EmotionWire',
-    description: pageData?.seo?.metaDescription || 'Explore our services including Brand Positioning, Thought Leadership, SEO Content Programs, and more.',
+    title: 'Offerings | EmotionWire',
+    description: 'Explore our services including Brand Positioning, Thought Leadership, SEO Content Programs, and more.',
   };
 }
 
-export default async function OfferingsIndex() {
-  const pageData = await client.fetch(`*[_type == "offeringsPage"][0]`, {}, { next: { revalidate: 60 } });
-  const allOfferings = await client.fetch(`*[_type == "offering"] | order(orderRank) {
-    "slug": slug.current,
-    title
-  }`, {}, { next: { revalidate: 60 } });
+export default function OfferingsIndex() {
+  const allOfferings = [
+    { slug: 'brand-positioning-sprint', title: 'Brand Positioning Sprint' },
+    { slug: 'founder-leadership-narrative-sprint', title: 'Founder Leadership Narrative Sprint' },
+    { slug: 'b2b-website-messaging-audit-and-realigning', title: 'B2B Website Messaging Audit' }
+  ];
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>{pageData?.title || 'Offerings'}</h1>
-        <p className={styles.subtitle}>{pageData?.subtitle || 'Branding, content, and GTM designed around how buyers actually decide.'}</p>
+        <h1 className={styles.title}>Offerings</h1>
+        <p className={styles.subtitle}>Branding, content, and GTM designed around how buyers actually decide.</p>
       </header>
       
       <div className={styles.grid}>
